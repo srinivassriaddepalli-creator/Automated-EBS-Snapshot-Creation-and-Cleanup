@@ -8,7 +8,7 @@ If you need to copy and paste the raw content immediately without downloading th
 📌 Objective: Automate the process of backing up a target Amazon Elastic Block Store (EBS) volume and purging obsolete backups. This solution utilizes an AWS Lambda function triggered weekly by an Amazon EventBridge schedule to create snapshots, tag them for tracking, and safely remove backups older than a 30-day retention period.
 
 
----## 🛠️ Step 1: Locate Target EBS Volume DetailsBefore configuring automation, identify the structural block device that requires scheduled backups.
+## 🛠️ Step 1: Locate Target EBS Volume DetailsBefore configuring automation, identify the structural block device that requires scheduled backups.
 
 1. Navigate to the **Amazon EC2 Console**.2. On the left-hand navigation sidebar, scroll down to the **Elastic Block Store** section and click on **Volumes**.3. Locate your target volume in the table.
 2.  Hover over the **Volume ID** column (e.g., `vol-0a1b2c3d4e5f6g7h8`) and click the double-square **Copy** icon. Save this ID for later use.
@@ -18,12 +18,14 @@ If you need to copy and paste the raw content immediately without downloading th
 
 
 
----## 🔐 Step 2: Configure Lambda IAM Role and PoliciesTo allow the Lambda function to interact with your EC2 infrastructure, create an execution role with precise, principle-of-least-privilege permissions.
+## 🔐 Step 2: Configure Lambda IAM Role and PoliciesTo allow the Lambda function to interact with your EC2 infrastructure, create an execution role with precise, principle-of-least-privilege permissions.
+
 ### 1. Create the Base Execution Role
 1. Navigate to the **IAM Console** ➔ **Roles** ➔ **Create role**.
 2. Select **AWS service** as the trusted entity type.3. Select **Lambda** from the Service dropdown menu and click **Next**.
 4. In the permissions policy search bar, find and check **`AWSLambdaBasicExecutionRole`** (this allows Lambda to stream logs to Amazon CloudWatch). Click **Next**.
 5. Name the role `AWSLambdaExecutionRole` and click **Create role**.
+
 ### 2. Attach Custom Inline Backup Policies
 1. Open your newly created `AWSLambdaExecutionRole` in the IAM console.
 2. Click the **Add permissions** dropdown menu on the right and select **Create inline policy**.
@@ -51,7 +53,7 @@ If you need to copy and paste the raw content immediately without downloading th
 
 <img width="915" height="365" alt="image" src="https://github.com/user-attachments/assets/c18493b5-8c07-445d-9b76-d585cf113531" />
 
----## 💻 Step 3: Deploy the AWS Lambda FunctionDeploy the core processing script inside the Lambda environment.
+## 💻 Step 3: Deploy the AWS Lambda FunctionDeploy the core processing script inside the Lambda environment.
 
 1. Navigate to the **AWS Lambda Console** ➔ **Create function**.
 2. Select **Author from scratch**. Configure the following parameters:
@@ -158,7 +160,7 @@ def lambda_handler(event, context):
 
 <img width="625" height="134" alt="image" src="https://github.com/user-attachments/assets/bab43c93-dd1e-46ed-9db0-dd201a9cb0ec" />
 
----## ⏰ Step 4: Configure the EventBridge Weekly Schedule
+## ⏰ Step 4: Configure the EventBridge Weekly Schedule
 
 1. Navigate to the **Amazon EventBridge Console** ➔ **Schedules** ➔ **Create schedule**.
 2. Provide a descriptive name such as `Automated_EBS_SnapshotCreation_and_Cleanup`.
@@ -193,7 +195,7 @@ To allow your schedule role to hand off processes to both Lambda execution runne
 
 <img width="958" height="127" alt="image" src="https://github.com/user-attachments/assets/32580485-c504-4423-a62e-652d7568beca" />
 
----## 🧪 Step 5: Manual Validation TestingVerify end-to-end functionality using manual testing tools built into the console environment.
+## 🧪 Step 5: Manual Validation TestingVerify end-to-end functionality using manual testing tools built into the console environment.
 
 1. Open your `EBS-Weekly-Backup-Cleanup` Lambda console page and open the **Test** tab.
 2. Keep an empty target event model block `{}` and click the orange **Test** button.
@@ -205,7 +207,7 @@ To allow your schedule role to hand off processes to both Lambda execution runne
 
 <img width="958" height="149" alt="Created_snap" src="https://github.com/user-attachments/assets/84ea8bf7-7735-463b-a72c-761a17456ef8" />
 
----## 📊 Architectural Discussion: AWS DLM vs. Custom Lambda
+## 📊 Architectural Discussion: AWS DLM vs. Custom Lambda
 
 While AWS Data Lifecycle Manager (DLM) manages automated backups natively using built-in lifecycle policies without code overhead, deploying an AWS Lambda function remains the superior choice in the following production use cases:
 
