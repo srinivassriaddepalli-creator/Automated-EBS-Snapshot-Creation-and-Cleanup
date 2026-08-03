@@ -7,7 +7,8 @@ If you need to copy and paste the raw content immediately without downloading th
 
 # Project Documentation: Automated EBS Snapshot Creation and Cleanup
 
-## 📌 Objective: Automate the process of backing up a target Amazon Elastic Block Store (EBS) volume and purging obsolete backups. This solution utilizes an AWS Lambda function triggered weekly by an Amazon EventBridge schedule to create snapshots, tag them for tracking, and safely remove backups older than a 30-day retention period.
+## 📌 Objective:
+Automate the process of backing up a target Amazon Elastic Block Store (EBS) volume and purging obsolete backups. This solution utilizes an AWS Lambda function triggered weekly by an Amazon EventBridge schedule to create snapshots, tag them for tracking, and safely remove backups older than a 30-day retention period.
 
 
 ## 🛠️ Step 1: Locate Target EBS Volume DetailsBefore configuring automation, identify the structural block device that requires scheduled backups.
