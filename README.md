@@ -13,10 +13,10 @@ If you need to copy and paste the raw content immediately without downloading th
 1. Navigate to the **Amazon EC2 Console**.2. On the left-hand navigation sidebar, scroll down to the **Elastic Block Store** section and click on **Volumes**.3. Locate your target volume in the table.
 2.  Hover over the **Volume ID** column (e.g., `vol-0a1b2c3d4e5f6g7h8`) and click the double-square **Copy** icon. Save this ID for later use.
 
-```text
+
 <img width="845" height="392" alt="image" src="https://github.com/user-attachments/assets/ae981752-6448-4572-a4bd-72e43e98b5ce" />
 
-```
+
 
 ---## 🔐 Step 2: Configure Lambda IAM Role and PoliciesTo allow the Lambda function to interact with your EC2 infrastructure, create an execution role with precise, principle-of-least-privilege permissions.
 ### 1. Create the Base Execution Role
@@ -48,11 +48,9 @@ If you need to copy and paste the raw content immediately without downloading th
 <img width="958" height="385" alt="image" src="https://github.com/user-attachments/assets/ae1c68ac-a7be-45e6-a7b5-92ebeac88a76" />
 
 4. Click **Next**, name the policy `Lambda-EBS-Snapshot-Permissions`, and click **Create policy**.
-```text
 
 <img width="915" height="365" alt="image" src="https://github.com/user-attachments/assets/c18493b5-8c07-445d-9b76-d585cf113531" />
 
-```
 ---## 💻 Step 3: Deploy the AWS Lambda FunctionDeploy the core processing script inside the Lambda environment.
 
 1. Navigate to the **AWS Lambda Console** ➔ **Create function**.
@@ -62,10 +60,7 @@ If you need to copy and paste the raw content immediately without downloading th
 3. Expand **Additional settings** at the bottom of the page. Select **Use an existing role** and choose `AWSLambdaExecutionRole` from your list.
 4. Click **Create function**.
 
-```text
 <img width="954" height="392" alt="image" src="https://github.com/user-attachments/assets/d4effa1b-c13e-4422-966b-f09849f02802" />
-
-```
 
 5. In the **Code** tab editor view, open `lambda_function.py`, erase the boilerplate text completely, and paste the production code below:
 ```python
@@ -150,9 +145,8 @@ def lambda_handler(event, context):
 ```
 6. Click the white **Deploy** button on the toolbar to publish your code updates.
 
-```text
 <img width="839" height="395" alt="image" src="https://github.com/user-attachments/assets/33432a3d-9a83-4f52-89dd-7c888e7965c8" />
-```
+
 ### Configure the Environment Variable
 
 1. While still inside your Lambda function console, click the **Configuration** tab ➔ **Environment variables** sidebar menu item.
@@ -162,9 +156,7 @@ def lambda_handler(event, context):
    * **Value**: *[Paste your actual EC2 Volume ID copied during Step 1]*
 4. Click **Save**.
 
-```text
 <img width="625" height="134" alt="image" src="https://github.com/user-attachments/assets/bab43c93-dd1e-46ed-9db0-dd201a9cb0ec" />
-```
 
 ---## ⏰ Step 4: Configure the EventBridge Weekly Schedule
 
@@ -199,25 +191,20 @@ To allow your schedule role to hand off processes to both Lambda execution runne
 ```
 6. Complete the wizard review steps and click **Create schedule**.
 
-```text
 <img width="958" height="127" alt="image" src="https://github.com/user-attachments/assets/32580485-c504-4423-a62e-652d7568beca" />
-```
+
 ---## 🧪 Step 5: Manual Validation TestingVerify end-to-end functionality using manual testing tools built into the console environment.
 
 1. Open your `EBS-Weekly-Backup-Cleanup` Lambda console page and open the **Test** tab.
 2. Keep an empty target event model block `{}` and click the orange **Test** button.
 3. Review the green **Execution result: succeeded** block to verify a `200` return response payload alongside logs printing out your real `CREATED SNAPSHOT ID`.
 
-```text
 <img width="599" height="317" alt="Execution_response" src="https://github.com/user-attachments/assets/1b0ec0c7-cf5b-46ae-a543-3a5c41e4e98a" />
 
-```
-
 4. Head back to **EC2 Console** ➔ **Snapshots** to confirm that the new snapshot exists, features your custom descriptive backup name, and includes the tracking meta tag pair: `CreatedBy = Lambda-Backup`.
-```text
+
 <img width="958" height="149" alt="Created_snap" src="https://github.com/user-attachments/assets/84ea8bf7-7735-463b-a72c-761a17456ef8" />
 
-```
 ---## 📊 Architectural Discussion: AWS DLM vs. Custom Lambda
 
 While AWS Data Lifecycle Manager (DLM) manages automated backups natively using built-in lifecycle policies without code overhead, deploying an AWS Lambda function remains the superior choice in the following production use cases:
